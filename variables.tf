@@ -51,6 +51,7 @@ variable "cosmos_db_containers" {
     { name = "exercicios", partition_key_path = "/tenantId" },
     { name = "objetivos", partition_key_path = "/tenantId" },
     { name = "notificacoes", partition_key_path = "/tenantId" },
+    { name = "historico-peso", partition_key_path = "/tenantId" },
     { name = "tenants", partition_key_path = "/id" },
   ]
 }
