@@ -157,3 +157,4 @@ resource "azurerm_cosmosdb_sql_role_assignment" "deployer_cosmos" {
   principal_id        = data.azurerm_client_config.current.object_id
   scope               = module.cosmos_db.id
 }
+
