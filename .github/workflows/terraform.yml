@@ -250,7 +250,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH_NAME"
-          git add PLAN_OUTPUT.txt
+          git add -f PLAN_OUTPUT.txt
           git commit -m "chore: add terraform plan output for review"
           git push origin "$BRANCH_NAME"
 
