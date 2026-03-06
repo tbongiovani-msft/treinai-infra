@@ -2,112 +2,96 @@ Acquiring state lock. This may take a few moments...
 module.key_vault.data.azurerm_client_config.current: Reading...
 data.azurerm_client_config.current: Reading...
 module.resource_group.azurerm_resource_group.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev]
-module.key_vault.data.azurerm_client_config.current: Read complete after 0s [id=Y2xpZW50Q29uZmlncy9jbGllbnRJZD05NGI0ZmZkYy05ZjQyLTRmYzItOTdiZi02Y2U1YWM0OGU4NGI7b2JqZWN0SWQ9YzQzMWJlMmQtNjhlNC00ZTAwLWFiNjAtMGQ3OGE0Y2U4NTJlO3N1YnNjcmlwdGlvbklkPTI0N2YxODA1LTIzZTQtNDlkZi04MzU5LWNlNzE3MjgzNDZhMzt0ZW5hbnRJZD00ODA3OWIwZS1hM2NkLTRiYzktYWViYS1mMDJhNzdlMDQ5YWQ=]
 data.azurerm_client_config.current: Read complete after 0s [id=Y2xpZW50Q29uZmlncy9jbGllbnRJZD05NGI0ZmZkYy05ZjQyLTRmYzItOTdiZi02Y2U1YWM0OGU4NGI7b2JqZWN0SWQ9YzQzMWJlMmQtNjhlNC00ZTAwLWFiNjAtMGQ3OGE0Y2U4NTJlO3N1YnNjcmlwdGlvbklkPTI0N2YxODA1LTIzZTQtNDlkZi04MzU5LWNlNzE3MjgzNDZhMzt0ZW5hbnRJZD00ODA3OWIwZS1hM2NkLTRiYzktYWViYS1mMDJhNzdlMDQ5YWQ=]
-module.functions.azurerm_service_plan.functions: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/serverFarms/treinai-plan-func-dev]
-module.app_insights.azurerm_log_analytics_workspace.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.OperationalInsights/workspaces/treinai-appi-dev-law]
-module.key_vault.azurerm_key_vault.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.KeyVault/vaults/treinai-kv-dev]
+module.key_vault.data.azurerm_client_config.current: Read complete after 0s [id=Y2xpZW50Q29uZmlncy9jbGllbnRJZD05NGI0ZmZkYy05ZjQyLTRmYzItOTdiZi02Y2U1YWM0OGU4NGI7b2JqZWN0SWQ9YzQzMWJlMmQtNjhlNC00ZTAwLWFiNjAtMGQ3OGE0Y2U4NTJlO3N1YnNjcmlwdGlvbklkPTI0N2YxODA1LTIzZTQtNDlkZi04MzU5LWNlNzE3MjgzNDZhMzt0ZW5hbnRJZD00ODA3OWIwZS1hM2NkLTRiYzktYWViYS1mMDJhNzdlMDQ5YWQ=]
 module.static_web_app.azurerm_static_web_app.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/staticSites/treinai-swa-dev]
+module.app_insights.azurerm_log_analytics_workspace.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.OperationalInsights/workspaces/treinai-appi-dev-law]
 module.managed_identity.azurerm_user_assigned_identity.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/treinai-identity-dev]
+module.functions.azurerm_service_plan.functions: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/serverFarms/treinai-plan-func-dev]
 module.cosmos_db.azurerm_cosmosdb_account.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev]
+module.key_vault.azurerm_key_vault.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.KeyVault/vaults/treinai-kv-dev]
 module.functions.azurerm_storage_account.functions: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Storage/storageAccounts/treinaistfuncdev]
 module.app_insights.azurerm_application_insights.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Insights/components/treinai-appi-dev]
-module.key_vault.azurerm_role_assignment.deployer_kv_admin: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.KeyVault/vaults/treinai-kv-dev/providers/Microsoft.Authorization/roleAssignments/da81bfc2-54a4-7dba-2096-04f7007ee9d9]
+module.key_vault.azurerm_role_assignment.deployer_kv_admin: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.KeyVault/vaults/treinai-kv-dev/providers/Microsoft.Authorization/roleAssignments/2b61cfc0-b32a-089e-64f5-4160e0329ed0]
 azurerm_role_assignment.identity_kv_secrets: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.KeyVault/vaults/treinai-kv-dev/providers/Microsoft.Authorization/roleAssignments/6853c9e5-7b02-77c4-a39d-17bef6deda29]
-module.cosmos_db.azurerm_cosmosdb_sql_database.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db]
-azurerm_cosmosdb_sql_role_assignment.identity_cosmos: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlRoleAssignments/d8606fbc-1082-37cb-a2ea-625181357092]
-azurerm_cosmosdb_sql_role_assignment.deployer_cosmos: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlRoleAssignments/e10a4a30-0ac3-2843-b79e-0d02e27cff27]
-module.cosmos_db.azurerm_cosmosdb_sql_container.containers["objetivos"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/objetivos]
-module.cosmos_db.azurerm_cosmosdb_sql_container.containers["notificacoes"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/notificacoes]
-module.cosmos_db.azurerm_cosmosdb_sql_container.containers["nutricao"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/nutricao]
-module.cosmos_db.azurerm_cosmosdb_sql_container.containers["treinos"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/treinos]
-module.cosmos_db.azurerm_cosmosdb_sql_container.containers["usuarios"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/usuarios]
-module.cosmos_db.azurerm_cosmosdb_sql_container.containers["tenants"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/tenants]
-module.cosmos_db.azurerm_cosmosdb_sql_container.containers["atividades"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/atividades]
-module.cosmos_db.azurerm_cosmosdb_sql_container.containers["avaliacoes"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/avaliacoes]
-module.cosmos_db.azurerm_cosmosdb_sql_container.containers["exercicios"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/exercicios]
 azurerm_role_assignment.identity_monitoring: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Insights/components/treinai-appi-dev/providers/Microsoft.Authorization/roleAssignments/6e5ca1c0-885c-aa05-d4cf-0a39adb628b1]
+module.cosmos_db.azurerm_cosmosdb_sql_database.this: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db]
+azurerm_cosmosdb_sql_role_assignment.deployer_cosmos: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlRoleAssignments/807f53a8-4637-5c64-5751-ab8b19aa0455]
+azurerm_cosmosdb_sql_role_assignment.identity_cosmos: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlRoleAssignments/d8606fbc-1082-37cb-a2ea-625181357092]
+module.cosmos_db.azurerm_cosmosdb_sql_container.containers["tenants"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/tenants]
+module.cosmos_db.azurerm_cosmosdb_sql_container.containers["objetivos"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/objetivos]
+module.cosmos_db.azurerm_cosmosdb_sql_container.containers["usuarios"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/usuarios]
+module.cosmos_db.azurerm_cosmosdb_sql_container.containers["avaliacoes"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/avaliacoes]
+module.cosmos_db.azurerm_cosmosdb_sql_container.containers["treinos"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/treinos]
+module.cosmos_db.azurerm_cosmosdb_sql_container.containers["nutricao"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/nutricao]
+module.cosmos_db.azurerm_cosmosdb_sql_container.containers["atividades"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/atividades]
+module.cosmos_db.azurerm_cosmosdb_sql_container.containers["notificacoes"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/notificacoes]
+module.cosmos_db.azurerm_cosmosdb_sql_container.containers["exercicios"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlDatabases/treinai-db/containers/exercicios]
+module.functions.azurerm_windows_function_app.apps["avaliacoes"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/sites/treinai-func-avaliacoes-dev]
 module.functions.azurerm_windows_function_app.apps["alunos"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/sites/treinai-func-alunos-dev]
-module.functions.azurerm_windows_function_app.apps["relatorios"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/sites/treinai-func-relatorios-dev]
+module.functions.azurerm_windows_function_app.apps["nutricao"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/sites/treinai-func-nutricao-dev]
 module.functions.azurerm_windows_function_app.apps["atividades"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/sites/treinai-func-atividades-dev]
 module.functions.azurerm_windows_function_app.apps["treinos"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/sites/treinai-func-treinos-dev]
-module.functions.azurerm_windows_function_app.apps["nutricao"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/sites/treinai-func-nutricao-dev]
 module.functions.azurerm_windows_function_app.apps["admin"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/sites/treinai-func-admin-dev]
-module.functions.azurerm_windows_function_app.apps["avaliacoes"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/sites/treinai-func-avaliacoes-dev]
+module.functions.azurerm_windows_function_app.apps["relatorios"]: Refreshing state... [id=/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/sites/treinai-func-relatorios-dev]
 
 Terraform used the selected providers to generate the following execution
 plan. Resource actions are indicated with the following symbols:
+  + create
   ~ update in-place
--/+ destroy and then create replacement
 
 Terraform will perform the following actions:
 
-  # azurerm_cosmosdb_sql_role_assignment.deployer_cosmos must be replaced
--/+ resource "azurerm_cosmosdb_sql_role_assignment" "deployer_cosmos" {
-      ~ id                  = "/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev/sqlRoleAssignments/e10a4a30-0ac3-2843-b79e-0d02e27cff27" -> (known after apply)
-      ~ name                = "e10a4a30-0ac3-2843-b79e-0d02e27cff27" -> (known after apply)
-      ~ principal_id        = "80b0a172-18a8-4110-ad46-ceee82b31f2f" -> "c431be2d-68e4-4e00-ab60-0d78a4ce852e" # forces replacement
-        # (4 unchanged attributes hidden)
+  # module.cosmos_db.azurerm_cosmosdb_sql_container.containers["alunos"] will be created
+  + resource "azurerm_cosmosdb_sql_container" "containers" {
+      + account_name        = "treinai-cosmos-dev"
+      + database_name       = "treinai-db"
+      + id                  = (known after apply)
+      + name                = "alunos"
+      + partition_key_kind  = "Hash"
+      + partition_key_paths = [
+          + "/tenantId",
+        ]
+      + resource_group_name = "rg-treinai-dev"
+      + throughput          = (known after apply)
+
+      + indexing_policy {
+          + indexing_mode = "consistent"
+
+          + excluded_path {
+              + path = "/_etag/?"
+            }
+
+          + included_path {
+              + path = "/*"
+            }
+        }
     }
 
-  # module.app_insights.azurerm_application_insights.this will be updated in-place
-  ~ resource "azurerm_application_insights" "this" {
-        id                                    = "/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Insights/components/treinai-appi-dev"
-        name                                  = "treinai-appi-dev"
-        tags                                  = {
-            "cost_center" = "treinai-dev"
-            "environment" = "dev"
-            "managed_by"  = "terraform"
-            "owner"       = "tbongiovani"
-            "project"     = "treinai"
+  # module.cosmos_db.azurerm_cosmosdb_sql_container.containers["planos-nutricionais"] will be created
+  + resource "azurerm_cosmosdb_sql_container" "containers" {
+      + account_name        = "treinai-cosmos-dev"
+      + database_name       = "treinai-db"
+      + id                  = (known after apply)
+      + name                = "planos-nutricionais"
+      + partition_key_kind  = "Hash"
+      + partition_key_paths = [
+          + "/tenantId",
+        ]
+      + resource_group_name = "rg-treinai-dev"
+      + throughput          = (known after apply)
+
+      + indexing_policy {
+          + indexing_mode = "consistent"
+
+          + excluded_path {
+              + path = "/_etag/?"
+            }
+
+          + included_path {
+              + path = "/*"
+            }
         }
-        # (16 unchanged attributes hidden)
-    }
-
-  # module.app_insights.azurerm_log_analytics_workspace.this will be updated in-place
-  ~ resource "azurerm_log_analytics_workspace" "this" {
-        id                                      = "/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.OperationalInsights/workspaces/treinai-appi-dev-law"
-        name                                    = "treinai-appi-dev-law"
-        tags                                    = {
-            "cost_center" = "treinai-dev"
-            "environment" = "dev"
-            "managed_by"  = "terraform"
-            "owner"       = "tbongiovani"
-            "project"     = "treinai"
-        }
-        # (15 unchanged attributes hidden)
-    }
-
-  # module.cosmos_db.azurerm_cosmosdb_account.this will be updated in-place
-  ~ resource "azurerm_cosmosdb_account" "this" {
-        id                                       = "/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.DocumentDB/databaseAccounts/treinai-cosmos-dev"
-        name                                     = "treinai-cosmos-dev"
-        tags                                     = {
-            "cost_center" = "treinai-dev"
-            "environment" = "dev"
-            "managed_by"  = "terraform"
-            "owner"       = "tbongiovani"
-            "project"     = "treinai"
-        }
-        # (30 unchanged attributes hidden)
-
-        # (5 unchanged blocks hidden)
-    }
-
-  # module.functions.azurerm_storage_account.functions will be updated in-place
-  ~ resource "azurerm_storage_account" "functions" {
-        id                                = "/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Storage/storageAccounts/treinaistfuncdev"
-        name                              = "treinaistfuncdev"
-        tags                              = {
-            "cost_center" = "treinai-dev"
-            "environment" = "dev"
-            "managed_by"  = "terraform"
-            "owner"       = "tbongiovani"
-            "project"     = "treinai"
-        }
-        # (40 unchanged attributes hidden)
-
-        # (3 unchanged blocks hidden)
     }
 
   # module.functions.azurerm_windows_function_app.apps["admin"] will be updated in-place
@@ -313,18 +297,6 @@ Terraform will perform the following actions:
         # (2 unchanged blocks hidden)
     }
 
-  # module.key_vault.azurerm_role_assignment.deployer_kv_admin must be replaced
--/+ resource "azurerm_role_assignment" "deployer_kv_admin" {
-      + condition_version                = (known after apply)
-      ~ id                               = "/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.KeyVault/vaults/treinai-kv-dev/providers/Microsoft.Authorization/roleAssignments/da81bfc2-54a4-7dba-2096-04f7007ee9d9" -> (known after apply)
-      ~ name                             = "da81bfc2-54a4-7dba-2096-04f7007ee9d9" -> (known after apply)
-      ~ principal_id                     = "80b0a172-18a8-4110-ad46-ceee82b31f2f" -> "c431be2d-68e4-4e00-ab60-0d78a4ce852e" # forces replacement
-      ~ principal_type                   = "User" -> (known after apply)
-      ~ role_definition_id               = "/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/providers/Microsoft.Authorization/roleDefinitions/00482a5a-887f-4fb3-b363-3b7fe8e74483" -> (known after apply)
-      + skip_service_principal_aad_check = (known after apply)
-        # (2 unchanged attributes hidden)
-    }
-
   # module.static_web_app.azurerm_static_web_app.this will be updated in-place
   ~ resource "azurerm_static_web_app" "this" {
         id                                 = "/subscriptions/247f1805-23e4-49df-8359-ce71728346a3/resourceGroups/rg-treinai-dev/providers/Microsoft.Web/staticSites/treinai-swa-dev"
@@ -341,7 +313,7 @@ Terraform will perform the following actions:
         # (10 unchanged attributes hidden)
     }
 
-Plan: 2 to add, 12 to change, 2 to destroy.
+Plan: 2 to add, 8 to change, 0 to destroy.
 
 ─────────────────────────────────────────────────────────────────────────────
 
