@@ -3,13 +3,19 @@ name: "Terraform Plan & Apply"
 on:
   push:
     branches: [main]
+    paths:
+      - "*.tf"
+      - "**/*.tf"
+      - "environments/**"
+      - ".github/workflows/terraform.yml"
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, closed]
   workflow_dispatch:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   pull-requests: write
 
 env:
@@ -20,12 +26,17 @@ env:
 
 jobs:
   # ────────────────────────────────────────────
-  # Plan — runs on every push/PR
+  # Plan — runs on push to main and on PRs
+  # If push to main has changes → creates a PR
   # ────────────────────────────────────────────
   plan:
     name: "Terraform Plan"
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     environment: dev
+    outputs:
+      has_changes: ${{ steps.check_changes.outputs.has_changes }}
+      plan_summary: ${{ steps.plan_summary.outputs.summary }}
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIR }}
@@ -44,6 +55,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
 
       - name: Terraform Init
         env:
@@ -65,44 +77,259 @@ jobs:
           terraform plan \
             -var-file="environments/dev.tfvars" \
             -out=dev.tfplan \
+            -detailed-exitcode \
             -no-color 2>&1 | tee plan_output.txt
-        continue-on-error: true
+          PLAN_EXIT=${PIPESTATUS[0]}
+          if [ $PLAN_EXIT -eq 1 ]; then
+            echo "Terraform plan failed!"
+            exit 1
+          fi
+          # exit 0 = no changes, exit 2 = changes present
+          echo "plan_exit=$PLAN_EXIT" >> "$GITHUB_OUTPUT"
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if grep -q "No changes." plan_output.txt; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "✅ No infrastructure changes detected."
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "⚠️ Infrastructure changes detected!"
+          fi
+
+      - name: Generate plan summary
+        id: plan_summary
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          # Extract the summary line (Plan: X to add, Y to change, Z to destroy)
+          SUMMARY=$(grep -E "Plan:|No changes" plan_output.txt | tail -1)
+          echo "summary=$SUMMARY" >> "$GITHUB_OUTPUT"
+
+          # Build detailed change description
+          {
+            echo "PLAN_DETAIL<<PLAN_EOF"
+            echo "## 📋 Terraform Plan — Resumo de Alterações"
+            echo ""
+            echo "**$SUMMARY**"
+            echo ""
+
+            # Resources to CREATE
+            CREATES=$(grep -E '^\s+#.*will be created' plan_output.txt || true)
+            if [ -n "$CREATES" ]; then
+              echo "### ✅ Recursos a CRIAR"
+              echo '```'
+              echo "$CREATES"
+              echo '```'
+              echo ""
+            fi
+
+            # Resources to UPDATE
+            UPDATES=$(grep -E '^\s+#.*will be updated' plan_output.txt || true)
+            if [ -n "$UPDATES" ]; then
+              echo "### 🔄 Recursos a ALTERAR"
+              echo '```'
+              echo "$UPDATES"
+              echo '```'
+              echo ""
+            fi
+
+            # Resources to DESTROY
+            DESTROYS=$(grep -E '^\s+#.*will be destroyed' plan_output.txt || true)
+            if [ -n "$DESTROYS" ]; then
+              echo "### ❌ Recursos a DESTRUIR"
+              echo '```'
+              echo "$DESTROYS"
+              echo '```'
+              echo ""
+            fi
+
+            # Resources to REPLACE
+            REPLACES=$(grep -E '^\s+#.*(must be replaced|will be replaced)' plan_output.txt || true)
+            if [ -n "$REPLACES" ]; then
+              echo "### ⚠️ Recursos a RECRIAR (destroy + create)"
+              echo '```'
+              echo "$REPLACES"
+              echo '```'
+              echo ""
+            fi
+
+            echo "---"
+            echo ""
+            echo "<details><summary>📄 Plano completo (clique para expandir)</summary>"
+            echo ""
+            echo '```hcl'
+            head -c 60000 plan_output.txt
+            echo '```'
+            echo ""
+            echo "</details>"
+            echo "PLAN_EOF"
+          } >> "$GITHUB_ENV"
 
       - name: Post Plan to PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.check_changes.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = process.env.PLAN_DETAIL || 'No changes detected.';
+            // Find existing bot comment to update instead of creating duplicates
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Terraform Plan — Resumo')
+            );
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body,
+              });
+            }
+
+      - name: Fail on Plan Error
+        if: steps.plan.outputs.plan_exit == '1'
+        run: exit 1
+
+      - name: Upload Plan Artifact
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: |
+            ${{ env.WORKING_DIR }}/dev.tfplan
+            ${{ env.WORKING_DIR }}/plan_output.txt
+          retention-days: 5
+
+  # ────────────────────────────────────────────
+  # Create PR — on push to main when changes detected
+  # Creates a branch and PR with the plan details
+  # ────────────────────────────────────────────
+  create-pr:
+    name: "Create Apply PR"
+    runs-on: ubuntu-latest
+    needs: plan
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push' &&
+      needs.plan.outputs.has_changes == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: ./plan-artifact
+
+      - name: Create branch and PR
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const plan = fs.readFileSync('${{ env.WORKING_DIR }}/plan_output.txt', 'utf8');
-            const truncated = plan.length > 60000 ? plan.substring(0, 60000) + '\n... (truncated)' : plan;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            const planOutput = fs.readFileSync('./plan-artifact/plan_output.txt', 'utf8');
+            const sha = context.sha.substring(0, 7);
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
+            const branchName = `infra/apply-${timestamp}-${sha}`;
+
+            // Get the summary line
+            const summaryMatch = planOutput.match(/Plan:.*$/m);
+            const summary = summaryMatch ? summaryMatch[0] : 'Changes detected';
+
+            // Build structured description
+            let body = `## 📋 Terraform Plan — Resumo de Alterações\n\n`;
+            body += `**${summary}**\n\n`;
+            body += `**Commit:** \`${context.sha}\`\n`;
+            body += `**Triggered by:** @${context.actor}\n\n`;
+
+            // Creates
+            const creates = planOutput.match(/^\s+#.*will be created$/gm);
+            if (creates && creates.length > 0) {
+              body += `### ✅ Recursos a CRIAR (${creates.length})\n\`\`\`\n${creates.join('\n')}\n\`\`\`\n\n`;
+            }
+
+            // Updates
+            const updates = planOutput.match(/^\s+#.*will be updated/gm);
+            if (updates && updates.length > 0) {
+              body += `### 🔄 Recursos a ALTERAR (${updates.length})\n\`\`\`\n${updates.join('\n')}\n\`\`\`\n\n`;
+            }
+
+            // Destroys
+            const destroys = planOutput.match(/^\s+#.*will be destroyed$/gm);
+            if (destroys && destroys.length > 0) {
+              body += `### ❌ Recursos a DESTRUIR (${destroys.length})\n\`\`\`\n${destroys.join('\n')}\n\`\`\`\n\n`;
+            }
+
+            // Replaces
+            const replaces = planOutput.match(/^\s+#.*(must be replaced|will be replaced)$/gm);
+            if (replaces && replaces.length > 0) {
+              body += `### ⚠️ Recursos a RECRIAR (${replaces.length})\n\`\`\`\n${replaces.join('\n')}\n\`\`\`\n\n`;
+            }
+
+            body += `---\n\n`;
+            body += `<details><summary>📄 Plano completo (clique para expandir)</summary>\n\n`;
+            const truncated = planOutput.length > 60000
+              ? planOutput.substring(0, 60000) + '\n... (truncado)'
+              : planOutput;
+            body += `\`\`\`hcl\n${truncated}\n\`\`\`\n\n</details>\n\n`;
+            body += `---\n\n`;
+            body += `> **⚠️ Ao fazer merge desta PR, o Terraform Apply será executado automaticamente.**\n`;
+            body += `> Revise o plano acima com atenção antes de aprovar.`;
+
+            // Create branch from current SHA
+            await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `### Terraform Plan 📋\n\`\`\`\n${truncated}\n\`\`\``
+              ref: `refs/heads/${branchName}`,
+              sha: context.sha,
             });
 
-      - name: Fail on Plan Error
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
+            // Create PR
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🏗️ Terraform Apply: ${summary}`,
+              body: body,
+              head: branchName,
+              base: 'main',
+            });
 
-      - name: Upload Plan Artifact
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: ${{ env.WORKING_DIR }}/dev.tfplan
-          retention-days: 1
+            // Add label
+            try {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: ['terraform', 'infrastructure'],
+              });
+            } catch (e) {
+              console.log('Could not add labels (may not exist yet):', e.message);
+            }
+
+            core.notice(`PR #${pr.number} created: ${pr.html_url}`);
 
   # ────────────────────────────────────────────
-  # Apply — only on push to main
+  # Apply — only when PR is merged into main
   # ────────────────────────────────────────────
   apply:
     name: "Terraform Apply"
     runs-on: ubuntu-latest
-    needs: plan
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'main' &&
+      startsWith(github.event.pull_request.head.ref, 'infra/apply-')
     environment: dev
     defaults:
       run:
@@ -122,6 +349,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
 
       - name: Terraform Init
         env:
@@ -130,15 +358,37 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
         run: terraform init
 
-      - name: Download Plan Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: tfplan
-          path: ${{ env.WORKING_DIR }}
-
       - name: Terraform Apply
         env:
           ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
           ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-        run: terraform apply -auto-approve dev.tfplan
+        run: |
+          terraform apply \
+            -var-file="environments/dev.tfvars" \
+            -auto-approve \
+            -no-color 2>&1 | tee apply_output.txt
+
+      - name: Post Apply result to PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let output = '';
+            try {
+              output = fs.readFileSync('apply_output.txt', 'utf8');
+            } catch (e) {
+              output = 'Could not read apply output.';
+            }
+            const status = '${{ job.status }}' === 'success' ? '✅ Apply executado com sucesso!' : '❌ Apply falhou!';
+            const truncated = output.length > 60000
+              ? output.substring(0, 60000) + '\n... (truncado)'
+              : output;
+            const body = `## ${status}\n\n<details><summary>📄 Output do Apply</summary>\n\n\`\`\`hcl\n${truncated}\n\`\`\`\n\n</details>`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body,
+            });
