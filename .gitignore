@@ -17,3 +17,6 @@ override.tf.json
 # OS
 .DS_Store
 Thumbs.db
+
+# CI/CD artifacts
+PLAN_OUTPUT.txt

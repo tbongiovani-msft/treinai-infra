@@ -226,6 +226,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download Plan Artifact
         uses: actions/download-artifact@v4
@@ -233,15 +235,34 @@ jobs:
           name: tfplan
           path: ./plan-artifact
 
-      - name: Create branch and PR
+      - name: Create branch with plan file
+        id: branch
+        run: |
+          SHA_SHORT=$(echo "${{ github.sha }}" | cut -c1-7)
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H-%M-%S")
+          BRANCH_NAME="infra/apply-${TIMESTAMP}-${SHA_SHORT}"
+          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+          # Copy plan output to repo
+          cp ./plan-artifact/plan_output.txt ./PLAN_OUTPUT.txt
+
+          # Create and push branch
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH_NAME"
+          git add PLAN_OUTPUT.txt
+          git commit -m "chore: add terraform plan output for review"
+          git push origin "$BRANCH_NAME"
+
+      - name: Create PR with plan details
         uses: actions/github-script@v7
+        env:
+          BRANCH_NAME: ${{ steps.branch.outputs.branch_name }}
         with:
           script: |
             const fs = require('fs');
             const planOutput = fs.readFileSync('./plan-artifact/plan_output.txt', 'utf8');
-            const sha = context.sha.substring(0, 7);
-            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
-            const branchName = `infra/apply-${timestamp}-${sha}`;
+            const branchName = process.env.BRANCH_NAME;
 
             // Get the summary line
             const summaryMatch = planOutput.match(/Plan:.*$/m);
@@ -287,14 +308,6 @@ jobs:
             body += `> **⚠️ Ao fazer merge desta PR, o Terraform Apply será executado automaticamente.**\n`;
             body += `> Revise o plano acima com atenção antes de aprovar.`;
 
-            // Create branch from current SHA
-            await github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: `refs/heads/${branchName}`,
-              sha: context.sha,
-            });
-
             // Create PR
             const { data: pr } = await github.rest.pulls.create({
               owner: context.repo.owner,
@@ -305,7 +318,7 @@ jobs:
               base: 'main',
             });
 
-            // Add label
+            // Add labels
             try {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
@@ -314,7 +327,7 @@ jobs:
                 labels: ['terraform', 'infrastructure'],
               });
             } catch (e) {
-              console.log('Could not add labels (may not exist yet):', e.message);
+              console.log('Could not add labels:', e.message);
             }
 
             core.notice(`PR #${pr.number} created: ${pr.html_url}`);
