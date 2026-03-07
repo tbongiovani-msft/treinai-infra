@@ -55,6 +55,30 @@ variable "key_vault_uri" {
   type        = string
 }
 
+variable "b2c_instance" {
+  description = "Azure AD B2C instance URL (e.g. https://treinaidev.b2clogin.com)"
+  type        = string
+  default     = ""
+}
+
+variable "b2c_domain" {
+  description = "Azure AD B2C domain (e.g. treinaidev.onmicrosoft.com)"
+  type        = string
+  default     = ""
+}
+
+variable "b2c_client_id" {
+  description = "Azure AD B2C application (client) ID"
+  type        = string
+  default     = ""
+}
+
+variable "b2c_policy_id" {
+  description = "Azure AD B2C sign-up/sign-in policy name"
+  type        = string
+  default     = "B2C_1_signupsignin"
+}
+
 variable "tags" {
   type = map(string)
 }
@@ -116,6 +140,11 @@ resource "azurerm_windows_function_app" "apps" {
     "CosmosDb__DatabaseName"                = var.cosmos_database_name
     "CosmosDb__ManagedIdentityClientId"     = var.managed_identity_client_id
     "KeyVault__Uri"                         = var.key_vault_uri
+    # Azure AD B2C — populated after B2C tenant is provisioned (E1-07)
+    "AzureAdB2C__Instance"            = var.b2c_instance
+    "AzureAdB2C__Domain"              = var.b2c_domain
+    "AzureAdB2C__ClientId"            = var.b2c_client_id
+    "AzureAdB2C__SignUpSignInPolicyId" = var.b2c_policy_id
   }
 
   tags = var.tags

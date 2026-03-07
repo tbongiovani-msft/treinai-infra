@@ -7,3 +7,7 @@ environment     = "dev"
 location        = "brazilsouth"
 project         = "treinai"
 owner           = "tbongiovani"
+
+# Azure AD B2C (E1-07) — uncomment module in main.tf to provision
+b2c_tenant_name  = "treinaidev"
+b2c_display_name = "treinAI Dev"

@@ -69,3 +69,19 @@ variable "function_apps" {
     "admin",
   ]
 }
+
+# ──────────────────────────────────────────────
+# Azure AD B2C (E1-07)
+# ──────────────────────────────────────────────
+
+variable "b2c_tenant_name" {
+  description = "B2C tenant domain prefix (e.g. treinaidev → treinaidev.onmicrosoft.com)"
+  type        = string
+  default     = "treinaidev"
+}
+
+variable "b2c_display_name" {
+  description = "Display name for the B2C directory"
+  type        = string
+  default     = "treinAI Dev"
+}

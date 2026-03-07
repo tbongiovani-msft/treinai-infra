@@ -114,6 +114,20 @@ module "static_web_app" {
   tags                = local.tags
 }
 
+# ──────────────────────────────────────────────────────────
+# 8. Azure AD B2C Directory (E1-07)
+# ──────────────────────────────────────────────────────────
+# NOTE: Commented out until ready to provision B2C tenant.
+# Uncomment and run: terraform apply -var-file="environments/dev.tfvars"
+# After apply, manually configure user flows in Azure Portal.
+# module "ad_b2c" {
+#   source              = "./modules/ad-b2c"
+#   resource_group_name = module.resource_group.name
+#   b2c_tenant_name     = var.b2c_tenant_name
+#   b2c_display_name    = var.b2c_display_name
+#   tags                = local.tags
+# }
+
 # ══════════════════════════════════════════════════════════════
 # RBAC Assignments — Managed Identity → Azure Resources
 # ══════════════════════════════════════════════════════════════
