@@ -79,6 +79,19 @@ variable "b2c_policy_id" {
   default     = "B2C_1_signupsignin"
 }
 
+variable "acs_connection_string" {
+  description = "Azure Communication Services connection string"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "acs_sender_address" {
+  description = "ACS Email sender address (e.g., DoNotReply@guid.azurecomm.net)"
+  type        = string
+  default     = ""
+}
+
 variable "tags" {
   type = map(string)
 }
@@ -145,6 +158,9 @@ resource "azurerm_windows_function_app" "apps" {
     "AzureAdB2C__Domain"              = var.b2c_domain
     "AzureAdB2C__ClientId"            = var.b2c_client_id
     "AzureAdB2C__SignUpSignInPolicyId" = var.b2c_policy_id
+    # Azure Communication Services — Email (E1-07b, E3-30)
+    "ACS__ConnectionString" = var.acs_connection_string
+    "ACS__SenderAddress"    = var.acs_sender_address
   }
 
   tags = var.tags

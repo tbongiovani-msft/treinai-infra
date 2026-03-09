@@ -24,6 +24,8 @@ locals {
   kv_name       = "${var.project}-kv-${var.environment}"
   appi_name     = "${var.project}-appi-${var.environment}"
   swa_name      = "${var.project}-swa-${var.environment}"
+  acs_name      = "${var.project}-acs-${var.environment}"
+  acs_email_name = "${var.project}-acs-email-${var.environment}"
 }
 
 data "azurerm_client_config" "current" {}
@@ -100,6 +102,8 @@ module "functions" {
   cosmos_endpoint                = module.cosmos_db.endpoint
   cosmos_database_name           = module.cosmos_db.database_name
   key_vault_uri                  = module.key_vault.vault_uri
+  acs_connection_string          = module.communication_services.primary_connection_string
+  acs_sender_address             = module.communication_services.email_sender_address
   tags                           = local.tags
 }
 
@@ -115,7 +119,20 @@ module "static_web_app" {
 }
 
 # ──────────────────────────────────────────────────────────
-# 8. Azure AD B2C Directory (E1-07)
+# 8. Azure Communication Services + Email (E1-07b)
+# ──────────────────────────────────────────────────────────
+module "communication_services" {
+  source              = "./modules/communication-services"
+  name                = local.acs_name
+  email_name          = local.acs_email_name
+  resource_group_name = module.resource_group.name
+  location            = module.resource_group.location
+  data_location       = "Brazil"
+  tags                = local.tags
+}
+
+# ──────────────────────────────────────────────────────────
+# 9. Azure AD B2C Directory (E1-07)
 # ──────────────────────────────────────────────────────────
 # NOTE: Commented out until ready to provision B2C tenant.
 # Uncomment and run: terraform apply -var-file="environments/dev.tfvars"
@@ -159,6 +176,28 @@ resource "azurerm_role_assignment" "identity_monitoring" {
   scope                = module.app_insights.id
   role_definition_name = "Monitoring Metrics Publisher"
   principal_id         = module.managed_identity.principal_id
+}
+
+# ──────────────────────────────────────────────
+# E1-16: Contributor on Azure Communication Services
+# ──────────────────────────────────────────────
+resource "azurerm_role_assignment" "identity_acs" {
+  scope                = module.communication_services.id
+  role_definition_name = "Contributor"
+  principal_id         = module.managed_identity.principal_id
+}
+
+# ──────────────────────────────────────────────
+# E15-08: Store ACS connection string in Key Vault
+# ──────────────────────────────────────────────
+resource "azurerm_key_vault_secret" "acs_connection_string" {
+  name         = "AcsConnectionString"
+  value        = module.communication_services.primary_connection_string
+  key_vault_id = module.key_vault.id
+
+  depends_on = [
+    azurerm_role_assignment.identity_kv_secrets
+  ]
 }
 
 # ──────────────────────────────────────────────

@@ -43,3 +43,16 @@ output "static_web_app_api_key" {
 output "function_app_hostnames" {
   value = module.functions.function_app_hostnames
 }
+
+# ──────────────────────────────────────────────
+# Azure Communication Services (E1-07b)
+# ──────────────────────────────────────────────
+output "acs_email_sender_address" {
+  description = "Default ACS email sender address"
+  value       = module.communication_services.email_sender_address
+}
+
+output "acs_email_domain" {
+  description = "Azure-managed email domain"
+  value       = module.communication_services.email_domain_name
+}
