@@ -2,8 +2,7 @@
 # Terraform Import Blocks
 # ══════════════════════════════════════════════════════════════
 # These import blocks bring existing Azure resources into the
-# Terraform state. They are safe to remove after a successful
-# terraform apply.
+# Terraform state. Remove after a successful terraform apply.
 # ══════════════════════════════════════════════════════════════
 
 locals {
